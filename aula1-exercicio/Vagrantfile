@@ -1,0 +1,16 @@
+$script_mysql = <<-SCRIPT
+  apt-get update && \
+  apt-get install -y mysql-server-5.7 && \
+  mysql -e "create user 'teste'@'%' identified by 'pass';"
+  mysql -e "create user 'root'@'%' identified by '';"
+SCRIPT
+
+Vagrant.configure("2") do |config|
+  config.vm.box = "ubuntu/bionic64"
+  config.vm.network "forwarded_port", guest: 3306, host: 3306
+  config.vm.synced_folder "./configs", "/configs"
+
+  config.vm.provision "shell", inline: $script_mysql
+  config.vm.provision "shell", inline: "cat /configs/mysqld.cnf > /etc/mysql/mysql.conf.d/mysqld.cnf "
+  config.vm.provision "shell", inline: " service mysql restart "  
+end
