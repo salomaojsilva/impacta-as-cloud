@@ -1,0 +1,2 @@
+docker run -d --network=host nginx
+docker run -e MYSQL_ROOT_PASSWORD=root --network=bridge -d mysql
